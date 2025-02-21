@@ -29,18 +29,21 @@ import { ref, onMounted } from 'vue'
 import { getPokemons, getPokemon } from '../api/pokemonServices'
 import PokemonCard from '../components/PokemonCard.vue'
 
+// Definimos la interfaz de un Pokémon
 export interface Pokemon {
   name: string
   url: string
-  image?: string // Allow image to be undefined
-  types?: string[]
+  image?: string // La imagen es opcional
+  types?: string[] // Los tipos son opcionales
 }
 
+// Lista reactiva de Pokémon
 const pokemonsList = ref<Pokemon[] | null>(null)
 
-onMounted(async () => {
+// Función para obtener los datos de los Pokémon
+const fetchPokemons = async () => {
   try {
-    // Obtener lista de Pokémon con nombre y URL
+    // Obtener lista básica de Pokémon (nombre y URL)
     const data = await getPokemons()
     const basicPokemons = data.results.map((pokemon: { name: string; url: string }) => ({
       name: pokemon.name,
@@ -48,24 +51,27 @@ onMounted(async () => {
     }))
 
     // Obtener detalles adicionales de cada Pokémon
-    const getAllPokemonData = async () => {
-      const results = await Promise.all(
-        basicPokemons.map(async (pokemon) => {
-          const details = await getPokemon(pokemon.name)
-          return {
-            ...pokemon,
-            image: details.sprites?.front_default || '', // Agregamos la imagen
-            types: details.types.map((type: { type: { name: string } }) => type.type.name), // Agregamos los tipos
-            // description: details.species?.flavor_text_entries[0].flavor_text, // Agregamos la descripción
-          }
-        }),
-      )
-      // Asignamos los datos completos a la lista reactiva
-      pokemonsList.value = results
-    }
-    await getAllPokemonData()
+    const pokemonDetails = await Promise.all(
+      basicPokemons.map(async (pokemon) => {
+        const details = await getPokemon(pokemon.name)
+        return {
+          ...pokemon,
+          image: details.sprites?.front_default || '', // Agregamos la imagen
+          types: details.types.map((type: { type: { name: string } }) => type.type.name), // Agregamos los tipos
+        }
+      }),
+    )
+
+    // Asignamos los datos completos a la lista reactiva
+    pokemonsList.value = pokemonDetails
   } catch (error) {
     console.error('Error al cargar los Pokémon:', error)
+    pokemonsList.value = [] // En caso de error, asignamos un array vacío
   }
+}
+
+// Llamamos a la función cuando el componente se monta
+onMounted(() => {
+  fetchPokemons()
 })
 </script>

@@ -10,7 +10,7 @@ const apiClient: AxiosInstance = axios.create({
 export const getPokemons = async () => {
   try {
     const response = await apiClient.get('pokemon?limit=151')
-    console.log('response:', response)
+    // console.log('response:', response)
     return response.data
   } catch (error) {
     console.error('Error fetching pokemons:', error)
