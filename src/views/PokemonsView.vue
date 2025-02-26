@@ -23,10 +23,12 @@ import PokemonCard from "../components/PokemonCard.vue";
 export interface Pokemon {
   name: string;
   url: string;
-  image: string; // La imagen es opcional
-  types: PokemonTypes[]; // Los tipos son opcionales
+  imageFront: string;
+  imageBack: string;
+  types: PokemonTypes[];
+  height: number;
+  weight: number;
 }
-
 interface PokemonTypes {
   slot: number;
   type: {
@@ -55,16 +57,18 @@ const fetchPokemons = async () => {
         const details = await getPokemon(pokemon.name);
         return {
           ...pokemon,
-          image: details.sprites?.front_default ?? "", // Agregamos la imagen
+          name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1), // Convertimos el nombre a mayúsculas
+          imageFront: details.sprites?.front_default ?? "", // Agregamos la imagen
+          imageBack: details.sprites?.back_default ?? "", // Agregamos la imagen
           types: details.types.map((type: { type: { name: string } }) => ({
             name: type.type.name,
           })),
+          height: details.height,
+          weight: details.weight,
         };
       })
     );
-
-    console.log(pokemonDetails);
-
+    //console.log(pokemonDetails);
     // Asignamos los datos completos a la lista reactiva
     pokemonsList.value = pokemonDetails;
   } catch (error) {
