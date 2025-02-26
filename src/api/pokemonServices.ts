@@ -7,7 +7,7 @@ const apiClient: AxiosInstance = axios.create({
   },
 })
 
-export const getPokemons = async () => {
+export const getAllPokemons = async () => {
   try {
     const response = await apiClient.get('pokemon?limit=151')
     // console.log('response:', response)

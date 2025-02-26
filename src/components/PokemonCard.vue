@@ -1,48 +1,78 @@
 <template>
-  <v-card class="mx-auto" max-width="344">
-    <v-img height="200px" :src="pokemon.image" cover></v-img>
-    <!-- {{ pokemon }} -->
+  <v-card
+    class="mx-auto ma-5 pa-4"
+    @click="showDialog = true"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    :class="{ 'elevation-12': hover }"
+    max-width="344"
+  >
+    <v-img max-height="300px" :src="pokemon.image" cover></v-img>
     <v-card-title> {{ pokemon.name }} </v-card-title>
-    <!-- <v-card-subtitle> tipo {{ pokemon.types.map((t) => t.type.name).join(', ') }} </v-card-subtitle> -->
-    <v-card-subtitle v-if="pokemon?.types?.length">
-      Types: {{ props.pokemon.types.join(', ') }}
+    <v-card-subtitle>
+      Types:
+      <v-chip
+        v-for="(type, index) in pokemon.types"
+        :key="index"
+        class="ma-1"
+        color="primary"
+        small
+      >
+        {{ type.name }}
+      </v-chip>
     </v-card-subtitle>
-    <v-card-actions>
-      <v-btn color="orange-lighten-2" text="Explore"></v-btn>
-      <v-spacer></v-spacer>
-      <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show"></v-btn>
-    </v-card-actions>
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text> descripcion pokemon </v-card-text>
-      </div>
-    </v-expand-transition>
   </v-card>
+  <!-- Diálogo modal para la información detallada -->
+  <v-dialog v-model="showDialog" max-width="600">
+    <v-card>
+      <v-card-title class="text-h5">
+        {{ pokemon.name }}
+      </v-card-title>
+      <v-card-text>
+        <v-img :src="pokemon.image" cover></v-img>
+        <p>
+          <strong>URL:</strong>
+          <a :href="pokemon.url" target="_blank">{{ pokemon.url }}</a>
+        </p>
+        <strong>Types:</strong>
+        <v-chip
+          v-for="(type, index) in pokemon.types"
+          :key="index"
+          class="ma-1"
+          color="primary"
+          small
+        >
+          {{ type.name }}
+        </v-chip>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="showDialog = false">Cerrar</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
+import { ref, defineProps } from "vue";
+import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
 
 interface Pokemon {
-  name: string
-  url: string
-  image: string
-  types: PokemonTypes[]
+  name: string;
+  url: string;
+  image: string;
+  types: PokemonTypes[];
 }
 
 interface PokemonTypes {
-  slot: number
   type: {
-    name: string
-    url: string
-  }
+    name: string;
+  };
 }
 
-const props = defineProps<{ pokemon: Pokemon }>()
+const hover = ref(false);
+const props = defineProps<{ pokemon: Pokemon }>();
 
-console.log(props.pokemon.types.join(', '))
-
-const show = ref(false)
+const showDialog = ref(false);
 </script>
 <style scoped>
 .v-card-title {
