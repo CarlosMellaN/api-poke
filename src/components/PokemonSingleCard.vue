@@ -1,7 +1,6 @@
 <template>
-  <!-- Diálogo modal para la información detallada -->
   <v-dialog
-    :value="showDialog"
+    :model-value="showDialog"
     @update:modelValue="$emit('update:showDialog', $event)"
     max-width="600"
   >
@@ -62,6 +61,4 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "update:showDialog", value: boolean): void;
 }>();
-console.log("showDialog en el hijo:", props.showDialog);
-// console.log("Pokemon en el hijo:", props.pokemon);
 </script>
