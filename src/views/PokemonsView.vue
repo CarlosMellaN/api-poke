@@ -1,10 +1,5 @@
 <template>
   <v-container class="mb-12" no-gutters>
-    <v-row align="start">
-      <v-col class="ma-5">
-        <h2 class="text-h2">Pokemons</h2>
-      </v-col>
-    </v-row>
     <v-row align="start" no-gutters v-if="pokemonsList && pokemonsList.length">
       <v-col
         v-for="pokemon in pokemonsList"
