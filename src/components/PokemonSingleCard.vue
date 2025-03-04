@@ -5,6 +5,12 @@
     max-width="600"
   >
     <v-card>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="$emit('update:showDialog', false)"
+          >X</v-btn
+        >
+      </v-card-actions>
       <v-card-text>
         <v-row>
           <v-col cols="6"
@@ -32,12 +38,6 @@
           <p><strong>Weight:</strong> {{ pokemon.weight }}</p>
         </v-card-subtitle>
       </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="primary" @click="$emit('update:showDialog', false)"
-          >X</v-btn
-        >
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

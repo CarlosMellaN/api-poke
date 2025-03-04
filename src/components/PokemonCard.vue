@@ -28,25 +28,9 @@
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
 import PokemonSingleCard from "./PokemonSingleCard.vue";
-
-interface Pokemon {
-  name: string;
-  url: string;
-  imageFront: string;
-  imageBack: string;
-  types: PokemonTypes[];
-  height: number;
-  weight: number;
-}
-
-interface PokemonTypes {
-  type: {
-    name: string;
-  };
-}
+import type { Pokemon } from "@/types/pokemonTypes";
 
 const hover = ref(false);
-const props = defineProps<{ pokemon: Pokemon }>();
-
 const showDialog = ref(false);
+defineProps<{ pokemon: Pokemon }>();
 </script>

@@ -18,23 +18,8 @@
 import { ref, onMounted } from "vue";
 import { getAllPokemons, getPokemon } from "../api/pokemonServices";
 import PokemonCard from "../components/PokemonCard.vue";
-
-// Definimos la interfaz de un Pokémon
-export interface Pokemon {
-  name: string;
-  url: string;
-  imageFront: string;
-  imageBack: string;
-  types: PokemonTypes[];
-  height: number;
-  weight: number;
-}
-interface PokemonTypes {
-  slot: number;
-  type: {
-    name: string;
-  };
-}
+import { mapPokemonDetails } from "@/utils/pokemonBasics";
+import type { Pokemon } from "@/types/pokemonTypes";
 
 // Lista reactiva de Pokémon
 const pokemonsList = ref<Pokemon[] | null>(null);
@@ -50,26 +35,12 @@ const fetchPokemons = async () => {
         url: pokemon.url,
       })
     );
-
-    // Obtener detalles adicionales de cada Pokémon
     const pokemonDetails = await Promise.all(
       basicPokemons.map(async (pokemon: { name: string; url: string }) => {
         const details = await getPokemon(pokemon.name);
-        return {
-          ...pokemon,
-          name: pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1), // Convertimos el nombre a mayúsculas
-          imageFront: details.sprites?.front_default ?? "", // Agregamos la imagen
-          imageBack: details.sprites?.back_default ?? "", // Agregamos la imagen
-          types: details.types.map((type: { type: { name: string } }) => ({
-            name: type.type.name,
-          })),
-          height: details.height,
-          weight: details.weight,
-        };
+        return mapPokemonDetails(details);
       })
     );
-    //console.log(pokemonDetails);
-    // Asignamos los datos completos a la lista reactiva
     pokemonsList.value = pokemonDetails;
   } catch (error) {
     console.error("Error al cargar los Pokémon:", error);
