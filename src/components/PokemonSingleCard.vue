@@ -20,7 +20,7 @@
             ><v-img :src="pokemon.imageBack" max-height="200px"></v-img
           ></v-col>
         </v-row>
-        <v-card-title>
+        <v-card-title class="font-weight-bold grey-darken-4">
           {{ pokemon.name }}
         </v-card-title>
         <v-card-subtitle>
