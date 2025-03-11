@@ -1,32 +1,34 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, { type AxiosInstance } from "axios";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: 'https://pokeapi.co/api/v2/',
+  baseURL: "https://pokeapi.co/api/v2/",
   headers: {
-    'Content-type': 'application/json',
+    "Content-type": "application/json",
   },
-})
+});
 
-export const getPokemons = async () => {
+export const getAllPokemons = async (limit = 99, offset = 0) => {
   try {
-    const response = await apiClient.get('pokemon?limit=151')
+    const response = await apiClient.get(
+      `pokemon?limit=${limit}&offset=${offset}`
+    );
     // console.log('response:', response)
-    return response.data
+    return response.data;
   } catch (error) {
-    console.error('Error fetching pokemons:', error)
-    throw error
+    console.error("Error fetching pokemons:", error);
+    throw error;
   }
-}
+};
 
 export const getPokemon = async (id: string) => {
   try {
-    const response = await apiClient.get(`pokemon/${id}`)
+    const response = await apiClient.get(`pokemon/${id}`);
     // console.log('response:', response)
-    return response.data
+    return response.data;
   } catch (error) {
-    console.error('Error fetching pokemon:', error)
-    throw error
+    console.error("Error fetching pokemon:", error);
+    throw error;
   }
-}
+};
 
-export default apiClient
+export default apiClient;

@@ -1,77 +1,96 @@
 <template>
   <v-container class="mb-12" no-gutters>
-    <v-row>
-      <v-col>
-        <h2>Pokemons</h2>
-      </v-col>
-    </v-row>
-    <v-row
-      align="start"
-      style="height: 150px"
-      no-gutters
-      v-if="pokemonsList && pokemonsList.length"
-    >
+    <v-row align="start" no-gutters v-if="pokemonsList && pokemonsList.length">
       <v-col
         v-for="pokemon in pokemonsList"
         :key="pokemon.name"
+        cols="12"
         md="4"
         sm="6"
-        class="d-flex flex-wrap ga-3"
       >
         <PokemonCard :pokemon="pokemon" />
+      </v-col>
+      <v-col cols="12" class="d-flex justify-center">
+        <v-pagination
+          v-model="page"
+          :length="totalPages"
+          class="my-4"
+          @update:model-value="handlePageChange"
+        ></v-pagination>
       </v-col>
     </v-row>
     <div v-else>Cargando Pokémon...</div>
   </v-container>
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { getPokemons, getPokemon } from '../api/pokemonServices'
-import PokemonCard from '../components/PokemonCard.vue'
-
-// Definimos la interfaz de un Pokémon
-export interface Pokemon {
-  name: string
-  url: string
-  image?: string // La imagen es opcional
-  types?: string[] // Los tipos son opcionales
-}
+import { ref, onMounted, watch } from "vue";
+import { getAllPokemons, getPokemon } from "../api/pokemonServices";
+import PokemonCard from "../components/PokemonCard.vue";
+import { mapPokemonDetails } from "@/utils/pokemonBasics";
+import type { Pokemon } from "@/types/pokemonTypes";
 
 // Lista reactiva de Pokémon
-const pokemonsList = ref<Pokemon[] | null>(null)
+const pokemonsList = ref<Pokemon[] | null>(null);
+const page = ref(1);
+const totalPages = ref(15); // Puedes ajustar este valor según la cantidad total de Pokémon
+const limit = ref(99); // Cantidad de Pokémon por página
+const isLoading = ref(false);
+const totalCount = ref(0);
+
+const getOffset = (pageNum: number): number => {
+  return (pageNum - 1) * limit.value;
+};
 
 // Función para obtener los datos de los Pokémon
-const fetchPokemons = async () => {
+const loadPokemons = async (pageNum: number) => {
   try {
-    // Obtener lista básica de Pokémon (nombre y URL)
-    const data = await getPokemons()
-    const basicPokemons = data.results.map((pokemon: { name: string; url: string }) => ({
-      name: pokemon.name,
-      url: pokemon.url,
-    }))
+    isLoading.value = true;
+    pokemonsList.value = null; // Reiniciar la lista mientras carga
 
-    // Obtener detalles adicionales de cada Pokémon
+    const offset = getOffset(pageNum);
+    const data = await getAllPokemons(limit.value, offset);
+
+    if (data.count !== totalCount.value) {
+      totalCount.value = data.count;
+      totalPages.value = Math.ceil(data.count / limit.value);
+    }
+
+    const basicPokemons = data.results.map(
+      (pokemon: { name: string; url: string }) => ({
+        name: pokemon.name,
+        url: pokemon.url,
+      })
+    );
+
     const pokemonDetails = await Promise.all(
-      basicPokemons.map(async (pokemon) => {
-        const details = await getPokemon(pokemon.name)
-        return {
-          ...pokemon,
-          image: details.sprites?.front_default || '', // Agregamos la imagen
-          types: details.types.map((type: { type: { name: string } }) => type.type.name), // Agregamos los tipos
-        }
-      }),
-    )
-
-    // Asignamos los datos completos a la lista reactiva
-    pokemonsList.value = pokemonDetails
+      basicPokemons.map(async (pokemon: { name: string; url: string }) => {
+        const details = await getPokemon(pokemon.name);
+        return mapPokemonDetails(details);
+      })
+    );
+    pokemonsList.value = pokemonDetails;
   } catch (error) {
-    console.error('Error al cargar los Pokémon:', error)
-    pokemonsList.value = [] // En caso de error, asignamos un array vacío
+    console.error("Error al cargar los Pokémon:", error);
+    pokemonsList.value = [];
   }
-}
+};
 
-// Llamamos a la función cuando el componente se monta
+// Manejar el cambio de página
+const handlePageChange = (newPage: number) => {
+  if (newPage !== page.value) {
+    loadPokemons(newPage);
+  }
+};
+
+watch(
+  page,
+  (newPage) => {
+    loadPokemons(newPage);
+  },
+  { immediate: false }
+);
+
 onMounted(() => {
-  fetchPokemons()
-})
+  loadPokemons(page.value);
+});
 </script>

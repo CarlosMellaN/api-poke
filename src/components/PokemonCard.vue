@@ -1,51 +1,47 @@
 <template>
-  <v-card class="mx-auto" max-width="344">
-    <v-img height="200px" :src="pokemon.image" cover></v-img>
-    <!-- {{ pokemon }} -->
-    <v-card-title> {{ pokemon.name }} </v-card-title>
-    <!-- <v-card-subtitle> tipo {{ pokemon.types.map((t) => t.type.name).join(', ') }} </v-card-subtitle> -->
-    <v-card-subtitle v-if="pokemon?.types?.length">
-      Types: {{ props.pokemon.types.join(', ') }}
+  <v-card
+    class="mx-auto ma-5 pa-4 custom-shadow custom-hover-shadow"
+    @click="showDialog = true"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    max-width="344"
+  >
+    <v-img max-height="300px" :src="pokemon.imageFront" cover></v-img>
+    <v-card-title class="font-weight-bold grey-darken-4">
+      {{ pokemon.name }}</v-card-title
+    >
+    <v-card-subtitle>
+      Types:
+      <v-chip
+        v-for="(type, index) in pokemon.types"
+        :key="index"
+        class="ma-1"
+        color="primary"
+        small
+      >
+        {{ type.name }}
+      </v-chip>
     </v-card-subtitle>
-    <v-card-actions>
-      <v-btn color="orange-lighten-2" text="Explore"></v-btn>
-      <v-spacer></v-spacer>
-      <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show"></v-btn>
-    </v-card-actions>
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text> descripcion pokemon </v-card-text>
-      </div>
-    </v-expand-transition>
   </v-card>
+  <PokemonSingleCard :pokemon="pokemon" v-model:showDialog="showDialog" />
 </template>
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
+import { ref } from "vue";
+import PokemonSingleCard from "./PokemonSingleCard.vue";
+import type { Pokemon } from "@/types/pokemonTypes";
 
-interface Pokemon {
-  name: string
-  url: string
-  image: string
-  types: PokemonTypes[]
-}
-
-interface PokemonTypes {
-  slot: number
-  type: {
-    name: string
-    url: string
-  }
-}
-
-const props = defineProps<{ pokemon: Pokemon }>()
-
-console.log(props.pokemon.types.join(', '))
-
-const show = ref(false)
+const hover = ref(false);
+const showDialog = ref(false);
+defineProps<{ pokemon: Pokemon }>();
 </script>
-<style scoped>
-.v-card-title {
-  font-size: 24px;
+<style>
+.custom-shadow {
+  background-color: white !important;
+}
+.custom-hover-shadow {
+  transition: box-shadow 0.3s ease-in-out;
+}
+.custom-hover-shadow:hover {
+  box-shadow: 0px 10px 20px #e0e0e0 !important;
 }
 </style>
