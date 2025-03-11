@@ -1,12 +1,12 @@
 <template>
   <v-app-bar :elevation="2">
     <v-container class="d-flex align-center py-0 my-0">
-      <v-app-bar-title>Pokemons</v-app-bar-title>
+      <v-app-bar-title class="text-h4">Pokemons</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
         density="compact"
-        label="Search"
+        label="Search Pokémon"
         :prepend-inner-icon="mdiMagnify"
         variant="solo-filled"
         flat

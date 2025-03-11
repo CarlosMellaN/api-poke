@@ -23,11 +23,10 @@
       </v-chip>
     </v-card-subtitle>
   </v-card>
-  <!-- Componente PokemonSingleCard -->
   <PokemonSingleCard :pokemon="pokemon" v-model:showDialog="showDialog" />
 </template>
 <script setup lang="ts">
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 import PokemonSingleCard from "./PokemonSingleCard.vue";
 import type { Pokemon } from "@/types/pokemonTypes";
 
@@ -37,12 +36,12 @@ defineProps<{ pokemon: Pokemon }>();
 </script>
 <style>
 .custom-shadow {
-  background-color: white !important; /* Asegura que la card no cambie de color */
+  background-color: white !important;
 }
 .custom-hover-shadow {
   transition: box-shadow 0.3s ease-in-out;
 }
 .custom-hover-shadow:hover {
-  box-shadow: 0px 10px 20px #e0e0e0 !important; /* Verde */
+  box-shadow: 0px 10px 20px #e0e0e0 !important;
 }
 </style>

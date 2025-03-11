@@ -3,7 +3,7 @@ export interface Pokemon {
   url: string;
   imageFront: string;
   imageBack: string;
-  types: { name: string }[]; // Cambiado de PokemonTypes[] a este formato
+  types: { name: string }[];
   height: number;
   weight: number;
 }

@@ -7,12 +7,11 @@ export function mapPokemonDetails(pokemonData: any): Pokemon {
     imageFront: pokemonData.sprites?.front_default || "",
     imageBack: pokemonData.sprites?.back_default || "",
     types: pokemonData.types.map((type: { type: { name: string } }) => ({
-      name: type.type.name, // ✅ Ahora coincide con la interfaz { name: string }
+      name: type.type.name,
     })),
     height: pokemonData.height,
     weight: pokemonData.weight,
   };
 
-  // console.log("Mapped Pokemon:", mappedPokemon); // Para depuración
   return mappedPokemon;
 }
