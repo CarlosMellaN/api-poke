@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import PokemonsView from "./views/PokemonsView.vue";
 import AppBar from "./components/AppBar.vue";
 </script>
 
@@ -7,7 +6,7 @@ import AppBar from "./components/AppBar.vue";
   <v-app>
     <v-container>
       <AppBar />
-      <PokemonsView />
+      <router-view />
     </v-container>
   </v-app>
 </template>
