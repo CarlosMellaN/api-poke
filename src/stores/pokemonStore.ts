@@ -4,29 +4,31 @@ import { ref } from "vue";
 import type { Pokemon } from "@/types/pokemonTypes";
 
 export const useFavoritePokemonStore = defineStore(
-  "favoritePokemon",
+  "favoritesPokemons",
   () => {
     // Almacena los Pokémon favoritos
-    const favoritePokemon = ref<Pokemon[]>([]);
+    const favoritesPokemons = ref<Pokemon[]>([]);
     // Acción para agregar un Pokémon a favoritos
     function addFavoritePokemon(pokemon: Pokemon) {
-      const exists = favoritePokemon.value.some((p) => p.name === pokemon.name);
+      const exists = favoritesPokemons.value.some(
+        (p) => p.name === pokemon.name
+      );
       if (!exists) {
-        favoritePokemon.value.push(pokemon);
+        favoritesPokemons.value.push(pokemon);
       }
     }
     // Acción para eliminar un Pokémon de favoritos
     function removeFavoritePokemon(pokemonName: string) {
-      favoritePokemon.value = favoritePokemon.value.filter(
+      favoritesPokemons.value = favoritesPokemons.value.filter(
         (p) => p.name !== pokemonName
       );
     }
     function isFavoritePokemon(pokemonName: string): boolean {
-      return favoritePokemon.value.some((p) => p.name === pokemonName);
+      return favoritesPokemons.value.some((p) => p.name === pokemonName);
     }
 
     return {
-      favoritePokemon,
+      favoritesPokemons,
       addFavoritePokemon,
       removeFavoritePokemon,
       isFavoritePokemon,

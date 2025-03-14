@@ -94,3 +94,8 @@ onMounted(() => {
   loadPokemons(page.value);
 });
 </script>
+<style scoped>
+.v-container {
+  margin-top: 56px;
+}
+</style>
